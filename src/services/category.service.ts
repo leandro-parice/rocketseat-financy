@@ -30,4 +30,25 @@ export class CategoryService {
 			},
 		});
 	}
+	async deleteCategory(id: string, userId: string) {
+		const category = await prismaClient.category.findUnique({
+			where: { id: id, userId: userId },
+		});
+
+		if (!category) {
+			throw new Error('Category not found');
+		}
+
+		await prismaClient.category.delete({
+			where: { id: id, userId: userId },
+		});
+
+		return true;
+	}
+
+	async listCategoriesByUser(userId: string) {
+		return prismaClient.category.findMany({
+			where: { userId: userId },
+		});
+	}
 }

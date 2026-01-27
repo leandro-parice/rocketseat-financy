@@ -46,6 +46,7 @@ type LoginOutput {
 type Mutation {
   createCategory(data: CreateCategoryInput!): CategoryModel!
   createUser(data: CreateUserInput!): UserModel!
+  deleteCategory(id: String!): Boolean!
   editCategory(data: EditCategoryInput!): CategoryModel!
   login(data: LoginInput!): LoginOutput!
   register(data: RegisterInput!): RegisterOutput!
@@ -53,6 +54,7 @@ type Mutation {
 
 type Query {
   getUser(id: String!): UserModel!
+  listCategoriesByUser: [CategoryModel!]!
 }
 
 input RegisterInput {

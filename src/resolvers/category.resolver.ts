@@ -2,6 +2,7 @@ import {
 	Arg,
 	FieldResolver,
 	Mutation,
+	Query,
 	Resolver,
 	Root,
 	UseMiddleware,
@@ -37,6 +38,21 @@ export class CategoryResolver {
 		@GqlUser() user: UserModel,
 	): Promise<CategoryModel> {
 		return this.categoryService.editCategory(data, user.id);
+	}
+
+	@Query(() => [CategoryModel])
+	async listCategoriesByUser(
+		@GqlUser() user: UserModel,
+	): Promise<CategoryModel[]> {
+		return this.categoryService.listCategoriesByUser(user.id);
+	}
+
+	@Mutation(() => Boolean)
+	async deleteCategory(
+		@Arg('id', () => String) id: string,
+		@GqlUser() user: UserModel,
+	): Promise<boolean> {
+		return this.categoryService.deleteCategory(id, user.id);
 	}
 
 	@FieldResolver(() => UserModel)
