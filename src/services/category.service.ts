@@ -30,6 +30,7 @@ export class CategoryService {
 			},
 		});
 	}
+
 	async deleteCategory(id: string, userId: string) {
 		const category = await prismaClient.category.findUnique({
 			where: { id: id, userId: userId },
@@ -49,6 +50,12 @@ export class CategoryService {
 	async listCategoriesByUser(userId: string) {
 		return prismaClient.category.findMany({
 			where: { userId: userId },
+		});
+	}
+
+	async findCategory(id: string) {
+		return prismaClient.category.findUnique({
+			where: { id: id },
 		});
 	}
 }
