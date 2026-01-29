@@ -1,11 +1,17 @@
-import { Button } from './components/ui/button';
+import { Route, Routes } from 'react-router';
+import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
+import { Layout } from './components/LayoutPage';
 
 function App() {
-
 	return (
-		<div className="flex min-h-svh flex-col items-center justify-center">
-			<Button>Hello World</Button>
-		</div>
+		<Layout>
+			<Routes>
+				<Route path="/" element={<LoginPage />} />
+				<Route path="/register" element={<RegisterPage />} />
+			</Routes>
+		</Layout>
+			
 	);
 }
 
