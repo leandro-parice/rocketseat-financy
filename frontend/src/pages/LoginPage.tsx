@@ -13,8 +13,34 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FieldGroup, Field, FieldLabel } from '@/components/ui/field';
+import { useAuthStore } from '@/stores/auth';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export function LoginPage() {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState(false);
+
+	const login = useAuthStore((state) => state.login);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		setLoading(true);
+
+		try {
+			const loginMutate = await login({ email, password });
+			if (loginMutate) {
+				toast.success('Login realizado com sucesso!');
+			}
+		} catch (error) {
+			console.error('Erro ao fazer login:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
 	return (
 		<div className="flex flex-col gap-8 items-center justify-center min-h-[calc(100vh-4rem)]">
 			<img src={logo} alt="Financy Logo" />
@@ -27,7 +53,7 @@ export function LoginPage() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form>
+					<form onSubmit={handleSubmit}>
 						<div className="flex flex-col gap-6">
 							<div className="grid gap-2">
 								<Label htmlFor="email" className="text-gray-600">
@@ -38,6 +64,8 @@ export function LoginPage() {
 									type="email"
 									placeholder="m@example.com"
 									className="border-gray-200"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
 									required
 								/>
 							</div>
@@ -49,6 +77,9 @@ export function LoginPage() {
 									id="password"
 									type="password"
 									className="border-gray-200"
+									placeholder="Digite sua senha"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
 									required
 								/>
 							</div>
@@ -80,6 +111,8 @@ export function LoginPage() {
 					<Button
 						type="submit"
 						className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
+						disabled={loading}
+						onClick={handleSubmit}
 					>
 						Entrar
 					</Button>
