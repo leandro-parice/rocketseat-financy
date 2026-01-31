@@ -9,23 +9,50 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FieldGroup, Field, FieldLabel } from '@/components/ui/field';
 import { useAuthStore } from '@/stores/auth';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import {
+	EyeClosedIcon,
+	EyeIcon,
+	LockIcon,
+	MailIcon,
+	UserPlus,
+} from 'lucide-react';
+import {
+	InputGroup,
+	InputGroupInput,
+	InputGroupAddon,
+} from '@/components/ui/input-group';
+import { validateEmail } from '@/lib/utils';
 
 export function LoginPage() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [passwordVisible, setPasswordVisible] = useState(false);
 
 	const login = useAuthStore((state) => state.login);
 
+	const handlePasswordVisibility = () => {
+		setPasswordVisible(!passwordVisible);
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (email.trim() === '' || password.trim() === '') {
+			toast.error('Por favor, preencha todos os campos.');
+			return;
+		}
+
+		if (!validateEmail(email)) {
+			toast.error('Por favor, insira um e-mail válido.');
+			return;
+		}
 
 		setLoading(true);
 
@@ -59,29 +86,52 @@ export function LoginPage() {
 								<Label htmlFor="email" className="text-gray-600">
 									Email
 								</Label>
-								<Input
-									id="email"
-									type="email"
-									placeholder="m@example.com"
-									className="border-gray-200"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									required
-								/>
+								<InputGroup className="border-gray-300 py-5">
+									<InputGroupInput
+										id="email"
+										type="email"
+										placeholder="mail@example.com"
+										className="border-gray-200  px-4 py-5"
+										required
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+									/>
+									<InputGroupAddon align="inline-start">
+										<MailIcon className="text-muted-foreground text-gray-500" />
+									</InputGroupAddon>
+								</InputGroup>
 							</div>
 							<div className="grid gap-2">
 								<Label htmlFor="password" className="text-gray-600">
-									Password
+									Senha
 								</Label>
-								<Input
-									id="password"
-									type="password"
-									className="border-gray-200"
-									placeholder="Digite sua senha"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									required
-								/>
+								<InputGroup className="border-gray-300 py-5">
+									<InputGroupInput
+										id="password"
+										type={passwordVisible ? 'text' : 'password'}
+										placeholder="Digite sua senha"
+										required
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+									/>
+									<InputGroupAddon align="inline-start">
+										<LockIcon className="text-muted-foreground text-gray-500" />
+									</InputGroupAddon>
+									<InputGroupAddon align="inline-end">
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={handlePasswordVisibility}
+										>
+											{passwordVisible ? (
+												<EyeIcon className="text-muted-foreground text-gray-500" />
+											) : (
+												<EyeClosedIcon className="text-muted-foreground text-gray-500" />
+											)}
+										</Button>
+									</InputGroupAddon>
+								</InputGroup>
 							</div>
 							<div className="grid gap-2">
 								<div className="flex items-center justify-between">
@@ -127,7 +177,10 @@ export function LoginPage() {
 						className="w-full border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-5"
 						asChild
 					>
-						<Link to="/register">Criar conta</Link>
+						<Link to="/register">
+							<UserPlus className="inline-block" />
+							Criar conta
+						</Link>
 					</Button>
 				</CardFooter>
 			</Card>
