@@ -9,17 +9,42 @@ import type { Category } from '@/types';
 import { CreateCategoryDialog } from './components/CreateCategoryDialog';
 import { EditCategoryDialog } from './components/EditCategoryDialog';
 import { DeleteCategoryDialog } from './components/DeleteCategoryDialog';
+import { ICON_OPTIONS } from '@/types';
 
 export function CategoriesPage() {
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
 	const [editDialogOpen, setEditDialogOpen] = useState(false);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+	const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+		null,
+	);
+
 	const { data, refetch } = useQuery<{
 		listCategoriesByUser: Category[];
 	}>(LIST_CATEGORIES_QUERY);
 
 	const categories = data?.listCategoriesByUser || [];
+
+	const totalTransactions = categories.reduce(
+		(total, category) => total + category.transactionsCount,
+		0,
+	);
+
+	const mostUsedCategory =
+		categories.length > 0
+			? categories.reduce((mostUsed, current) =>
+					current.transactionsCount > mostUsed.transactionsCount
+						? current
+						: mostUsed,
+				)
+			: null;
+
+	const MostUsedIcon = mostUsedCategory
+		? (ICON_OPTIONS.find((option) => option.value === mostUsedCategory.icon)
+				?.Icon ?? UtensilsIcon)
+		: UtensilsIcon;
+
+	const mostUsedColor = mostUsedCategory ? mostUsedCategory.color : 'gray';
 
 	const handleOpenCreateDialog = () => {
 		setCreateDialogOpen(true);
@@ -57,23 +82,29 @@ export function CategoriesPage() {
 					<main className="w-full max-w-6xl grid grid-cols-12 gap-6">
 						<div className="col-span-12 md:col-span-6 lg:col-span-4">
 							<CategoriesCard
-								title="8"
+								title={categories.length.toString()}
 								description="Total de categorias"
 								icon={<TagIcon className="w-6 h-6 mt-1" />}
 							/>
 						</div>
 						<div className="col-span-12 md:col-span-6 lg:col-span-4">
 							<CategoriesCard
-								title="27"
+								title={totalTransactions.toString()}
 								description="Total de transações"
-								icon={<ArrowDownUpIcon className="w-6 h-6 mt-1" />}
+								icon={
+									<ArrowDownUpIcon className="w-6 h-6 mt-1 text-purple-base" />
+								}
 							/>
 						</div>
 						<div className="col-span-12 md:col-span-6 lg:col-span-4">
 							<CategoriesCard
-								title="Alimentação"
+								title={mostUsedCategory?.name ?? 'Sem dados'}
 								description="Categoria mais utilizada"
-								icon={<UtensilsIcon className="w-6 h-6 mt-1" />}
+								icon={
+									<MostUsedIcon
+										className={`w-6 h-6 mt-1 text-${mostUsedColor}-base`}
+									/>
+								}
 							/>
 						</div>
 

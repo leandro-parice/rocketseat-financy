@@ -62,16 +62,21 @@ export function CreateCategoryDialog({
 	const [icon, setIcon] = useState('');
 	const [color, setColor] = useState('');
 
+	const clearForm = () => {
+		setName('');
+		setDescription('');
+		setIcon('');
+		setColor('');
+	};
+
 	const [createCategory, { loading }] = useMutation(CREATE_CATEGORY_MUTATION, {
 		onCompleted: () => {
-			setName('');
-			setDescription('');
-			setIcon('');
-			setColor('');
+			clearForm();
 			toast.success('Categoria criada com sucesso!');
 			onOpenChange(false);
 		},
 		onError: (error) => {
+			clearForm();
 			toast.error('Erro ao criar categoria: ' + error.message);
 		},
 	});

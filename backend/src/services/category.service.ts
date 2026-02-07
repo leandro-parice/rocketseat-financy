@@ -11,16 +11,14 @@ export class CategoryService {
 		});
 
 		if (existingCategory) {
-			throw new Error('Category with this name already exists');
+			throw new Error('Já existe uma categoria com esse nome');
 		}
 
 		return prismaClient.category.create({
 			data: {
 				userId: userId,
 				name: data.name,
-				...(data.description != null
-					? { description: data.description }
-					: {}),
+				...(data.description != null ? { description: data.description } : {}),
 				color: data.color,
 				icon: data.icon,
 			},
@@ -33,7 +31,7 @@ export class CategoryService {
 		});
 
 		if (!category) {
-			throw new Error('Category not found');
+			throw new Error('Categoria não encontrada');
 		}
 
 		const existingCategory = await prismaClient.category.findFirst({
@@ -45,14 +43,14 @@ export class CategoryService {
 		});
 
 		if (existingCategory) {
-			throw new Error('Category with this name already exists');
+			throw new Error('Já existe uma categoria com esse nome');
 		}
 
 		return prismaClient.category.update({
 			where: { id: data.id, userId: userId },
 			data: {
 				name: data.name,
-				description: data.description,
+				...(data.description != null ? { description: data.description } : {}),
 				color: data.color,
 				icon: data.icon,
 			},
@@ -65,7 +63,7 @@ export class CategoryService {
 		});
 
 		if (!category) {
-			throw new Error('Category not found');
+			throw new Error('Categoria não encontrada');
 		}
 
 		await prismaClient.category.delete({

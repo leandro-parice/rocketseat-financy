@@ -63,7 +63,11 @@ export function LoginPage() {
 			}
 		} catch (error) {
 			console.error('Erro ao fazer login:', error);
-			throw error;
+			const message =
+				error instanceof Error && error.message
+					? error.message
+					: 'Credenciais inválidas.';
+			toast.error(message);
 		} finally {
 			setLoading(false);
 		}
@@ -79,14 +83,14 @@ export function LoginPage() {
 						Entre na sua conta para continuar
 					</CardDescription>
 				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit}>
+				<form onSubmit={handleSubmit}>
+					<CardContent>
 						<div className="flex flex-col gap-6">
 							<div className="grid gap-2">
 								<Label htmlFor="email" className="text-gray-600">
 									Email
 								</Label>
-								<InputGroup className="border-gray-300 py-5">
+								<InputGroup className="border-gray-300 py-5 has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-gray-300">
 									<InputGroupInput
 										id="email"
 										type="email"
@@ -105,7 +109,7 @@ export function LoginPage() {
 								<Label htmlFor="password" className="text-gray-600">
 									Senha
 								</Label>
-								<InputGroup className="border-gray-300 py-5">
+								<InputGroup className="border-gray-300 py-5 has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-gray-300">
 									<InputGroupInput
 										id="password"
 										type={passwordVisible ? 'text' : 'password'}
@@ -155,34 +159,35 @@ export function LoginPage() {
 								</div>
 							</div>
 						</div>
-					</form>
-				</CardContent>
-				<CardFooter className="flex-col gap-2">
-					<Button
-						type="submit"
-						className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
-						disabled={loading}
-						onClick={handleSubmit}
-					>
-						Entrar
-					</Button>
-					<div className="flex gap-2 w-full items-center justify-center-safe">
-						<div className="h-px bg-gray-300 w-full"></div>
-						<div className="text-gray-500 px-2">ou</div>
-						<div className="h-px bg-gray-300 w-full"></div>
-					</div>
-					<div className="text-center text-gray-600">Ainda não tem conta?</div>
-					<Button
-						variant="outline"
-						className="w-full border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-5"
-						asChild
-					>
-						<Link to="/register">
-							<UserPlus className="inline-block" />
-							Criar conta
-						</Link>
-					</Button>
-				</CardFooter>
+					</CardContent>
+					<CardFooter className="flex-col gap-2 pt-4">
+						<Button
+							type="submit"
+							className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
+							disabled={loading}
+						>
+							Entrar
+						</Button>
+						<div className="flex gap-2 w-full items-center justify-center-safe">
+							<div className="h-px bg-gray-300 w-full"></div>
+							<div className="text-gray-500 px-2">ou</div>
+							<div className="h-px bg-gray-300 w-full"></div>
+						</div>
+						<div className="text-center text-gray-600">
+							Ainda não tem conta?
+						</div>
+						<Button
+							variant="outline"
+							className="w-full border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-5"
+							asChild
+						>
+							<Link to="/register">
+								<UserPlus className="inline-block" />
+								Criar conta
+							</Link>
+						</Button>
+					</CardFooter>
+				</form>
 			</Card>
 		</div>
 	);

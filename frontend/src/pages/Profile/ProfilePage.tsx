@@ -78,7 +78,6 @@ function ProfileForm({ user, onLogout }: ProfileFormProps) {
 
 	return (
 		<>
-			<Header />
 			<div className="flex flex-col gap-8 items-center justify-center">
 				<Card className="w-full max-w-md border-gray-200 bg-white shadow-sm">
 					<form onSubmit={handleSubmit}>
@@ -168,5 +167,7 @@ function ProfileForm({ user, onLogout }: ProfileFormProps) {
 export function ProfilePage() {
 	const { user, logout } = useAuthStore();
 
-	return <ProfileForm key={user?.id ?? 'guest'} user={user} onLogout={logout} />;
+	return (
+		<ProfileForm key={user?.id ?? 'guest'} user={user} onLogout={logout} />
+	);
 }

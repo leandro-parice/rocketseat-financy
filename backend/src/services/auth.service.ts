@@ -13,7 +13,7 @@ export class AuthService {
 		});
 
 		if (!existingUser) {
-			throw new Error('Invalid credentials');
+			throw new Error('Dados incorretos');
 		}
 
 		const isPasswordValid = await comparePassword(
@@ -22,7 +22,7 @@ export class AuthService {
 		);
 
 		if (!isPasswordValid) {
-			throw new Error('Invalid credentials');
+			throw new Error('Dados incorretos');
 		}
 
 		return this.generateTokens(existingUser);
