@@ -8,10 +8,12 @@ import { LIST_CATEGORIES_QUERY } from '@/lib/graphql/queries/Categories';
 import type { Category } from '@/types';
 import { CreateCategoryDialog } from './components/CreateCategoryDialog';
 import { EditCategoryDialog } from './components/EditCategoryDialog';
+import { DeleteCategoryDialog } from './components/DeleteCategoryDialog';
 
 export function CategoriesPage() {
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
 	const [editDialogOpen, setEditDialogOpen] = useState(false);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const { data, refetch } = useQuery<{
 		listCategoriesByUser: Category[];
@@ -26,6 +28,11 @@ export function CategoriesPage() {
 	const handleOpenEditDialog = (category: Category) => {
 		setSelectedCategory(category);
 		setEditDialogOpen(true);
+	};
+
+	const handleOpenDeleteDialog = (category: Category) => {
+		setSelectedCategory(category);
+		setDeleteDialogOpen(true);
 	};
 
 	return (
@@ -78,6 +85,7 @@ export function CategoriesPage() {
 								<CategoriesItem
 									category={category}
 									onEdit={handleOpenEditDialog}
+									onDelete={handleOpenDeleteDialog}
 								/>
 							</div>
 						))}
@@ -95,6 +103,15 @@ export function CategoriesPage() {
 				<EditCategoryDialog
 					open={editDialogOpen}
 					onOpenChange={setEditDialogOpen}
+					category={selectedCategory}
+					onSuccess={refetch}
+				/>
+			)}
+
+			{selectedCategory && (
+				<DeleteCategoryDialog
+					open={deleteDialogOpen}
+					onOpenChange={setDeleteDialogOpen}
 					category={selectedCategory}
 					onSuccess={refetch}
 				/>

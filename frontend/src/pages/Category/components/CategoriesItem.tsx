@@ -13,6 +13,7 @@ import { EditIcon, TrashIcon, UtensilsIcon } from 'lucide-react';
 interface CategoriesItemProps {
 	category: Category;
 	onEdit?: (category: Category) => void;
+	onDelete?: (category: Category) => void;
 }
 
 const COLOR_CLASS_MAP: Record<string, { text: string; background: string }> = {
@@ -25,7 +26,11 @@ const COLOR_CLASS_MAP: Record<string, { text: string; background: string }> = {
 	yellow: { text: 'text-yellow-base', background: 'bg-yellow-light' },
 };
 
-export function CategoriesItem({ category, onEdit }: CategoriesItemProps) {
+export function CategoriesItem({
+	category,
+	onEdit,
+	onDelete,
+}: CategoriesItemProps) {
 	const SelectedIcon =
 		ICON_OPTIONS.find((option) => option.value === category.icon)?.Icon ??
 		UtensilsIcon;
@@ -45,7 +50,10 @@ export function CategoriesItem({ category, onEdit }: CategoriesItemProps) {
 						<SelectedIcon className="w-4 h-4" />
 					</div>
 					<div className="flex justify-center gap-3">
-						<Button className="w-8 h-8 border border-gray-200 bg-white shadow-sm gap-1 text-red-base hover:bg-red-light hover:text-red-dark">
+						<Button
+							className="w-8 h-8 border border-gray-200 bg-white shadow-sm gap-1 text-red-base hover:bg-red-light hover:text-red-dark"
+							onClick={() => onDelete?.(category)}
+						>
 							<TrashIcon />
 						</Button>
 						<Button

@@ -27,3 +27,9 @@ export const UPDATE_CATEGORY_MUTATION = gql`
 		}
 	}
 `;
+
+export const DELETE_CATEGORY_MUTATION = gql`
+	mutation DeleteCategory($deleteCategoryId: String!) {
+		deleteCategory(id: $deleteCategoryId)
+	}
+`;
