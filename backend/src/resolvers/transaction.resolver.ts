@@ -66,7 +66,8 @@ export class TransactionResolver {
 	@FieldResolver(() => CategoryModel)
 	async category(
 		@Root() transaction: TransactionModel,
+		@GqlUser() user: UserModel,
 	): Promise<CategoryModel> {
-		return this.categoryService.findCategory(transaction.categoryId);
+		return this.categoryService.findCategory(transaction.categoryId, user.id);
 	}
 }

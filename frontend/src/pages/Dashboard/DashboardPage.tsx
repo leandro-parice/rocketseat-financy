@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/stores/auth';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 import { DashboardCard } from './components/DashboardCard';
 import {
@@ -17,16 +16,11 @@ import {
 	CardContent,
 	CardFooter,
 } from '@/components/ui/card';
-import { Header } from '@/components/Header';
 import { DashboardTable } from './components/DashboardTable';
 
 export function DashboardPage() {
-	const { user, logout, isAuthenticated } = useAuthStore();
-	const navigate = useNavigate();
-
 	return (
 		<>
-			<Header />
 			<section className="flex items-center justify-center w-full">
 				<main className="grid grid-cols-3 gap-6 w-full max-w-6xl">
 					<DashboardCard

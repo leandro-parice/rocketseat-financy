@@ -10,11 +10,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { useAuthStore } from '@/stores/auth';
 import { LogOutIcon, MailIcon, UserIcon } from 'lucide-react';
-import { apolloClient } from '@/lib/apollo';
 import { PROFILE_MUTATION } from '@/lib/graphql/mutations/Profile';
 import type { ProfileInput, User } from '@/types';
 import {
@@ -23,45 +22,26 @@ import {
 	InputGroupAddon,
 } from '@/components/ui/input-group';
 import { getInitials } from '@/lib/utils';
+import { useMutation } from '@apollo/client/react';
 
-export function ProfilePage() {
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [loading, setLoading] = useState(false);
+type ProfileFormProps = {
+	user: User | null;
+	onLogout: () => void;
+};
+
+function ProfileForm({ user, onLogout }: ProfileFormProps) {
+	const [name, setName] = useState(user?.name ?? '');
 	const [isDirty, setIsDirty] = useState(false);
-	const lastUserIdRef = useRef<string | null>(null);
-
-	const { user, logout } = useAuthStore();
-
-	useEffect(() => {
-		if (!user) {
-			return;
-		}
-
-		const userId = user.id ?? null;
-		const hasUserChanged = userId && userId !== lastUserIdRef.current;
-
-		if (hasUserChanged) {
-			lastUserIdRef.current = userId;
-			setName(user.name ?? '');
-			setEmail(user.email ?? '');
-			setIsDirty(false);
-			return;
-		}
-
-		setEmail(user.email ?? '');
-
-		if (!isDirty) {
-			setName(user.name ?? '');
-		}
-	}, [isDirty, user]);
+	const [updateProfile, { loading }] = useMutation<
+		{ editUser: User },
+		{ data: ProfileInput }
+	>(PROFILE_MUTATION);
 
 	const initials = getInitials(name || user?.name || '');
-
 	const navigate = useNavigate();
 
 	const handleLogout = () => {
-		logout();
+		onLogout();
 		navigate('/login');
 	};
 
@@ -72,39 +52,30 @@ export function ProfilePage() {
 			return;
 		}
 
-		setLoading(true);
+		const trimmedName = name.trim();
+		if (!trimmedName || trimmedName === user.name) {
+			setIsDirty(false);
+			return;
+		}
 
-		try {
-			const updateData: ProfileInput = {
-				id: user.id,
-				name,
-			};
+		const updateData: ProfileInput = {
+			id: user.id,
+			name: trimmedName,
+		};
 
-			console.log(updateData);
+		const { data } = await updateProfile({
+			variables: { data: updateData },
+		});
 
-			const { data } = await apolloClient.mutate<
-				{ editUser: User },
-				{ data: ProfileInput }
-			>({
-				mutation: PROFILE_MUTATION,
-				variables: {
-					data: updateData,
-				},
-			});
-
-			if (data?.editUser) {
-				useAuthStore.setState((state) => ({
-					user: state.user
-						? { ...state.user, ...data.editUser }
-						: data.editUser,
-				}));
-				setName(data.editUser.name ?? name);
-				setIsDirty(false);
-			}
-		} finally {
-			setLoading(false);
+		if (data?.editUser) {
+			useAuthStore.setState((state) => ({
+				user: state.user ? { ...state.user, ...data.editUser } : data.editUser,
+			}));
+			setName(data.editUser.name ?? name);
+			setIsDirty(false);
 		}
 	};
+
 	return (
 		<>
 			<Header />
@@ -158,7 +129,7 @@ export function ProfilePage() {
 											placeholder="mail@example.com"
 											className="border-gray-200  px-4 py-5"
 											disabled
-											value={email}
+											value={user?.email ?? ''}
 										/>
 										<InputGroupAddon align="inline-start">
 											<MailIcon className="text-muted-foreground text-gray-500" />
@@ -192,4 +163,10 @@ export function ProfilePage() {
 			</div>
 		</>
 	);
+}
+
+export function ProfilePage() {
+	const { user, logout } = useAuthStore();
+
+	return <ProfileForm key={user?.id ?? 'guest'} user={user} onLogout={logout} />;
 }

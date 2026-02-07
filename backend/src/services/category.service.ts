@@ -6,10 +6,23 @@ import {
 
 export class CategoryService {
 	async createCategory(data: CreateCategoryInput, userId: string) {
+		const existingCategory = await prismaClient.category.findUnique({
+			where: { name_userId: { name: data.name, userId: userId } },
+		});
+
+		if (existingCategory) {
+			throw new Error('Category with this name already exists');
+		}
+
 		return prismaClient.category.create({
 			data: {
-				name: data.name,
 				userId: userId,
+				name: data.name,
+				...(data.description != null
+					? { description: data.description }
+					: {}),
+				color: data.color,
+				icon: data.icon,
 			},
 		});
 	}
@@ -23,10 +36,25 @@ export class CategoryService {
 			throw new Error('Category not found');
 		}
 
+		const existingCategory = await prismaClient.category.findFirst({
+			where: {
+				name: data.name,
+				userId: userId,
+				id: { not: data.id },
+			},
+		});
+
+		if (existingCategory) {
+			throw new Error('Category with this name already exists');
+		}
+
 		return prismaClient.category.update({
 			where: { id: data.id, userId: userId },
 			data: {
 				name: data.name,
+				description: data.description,
+				color: data.color,
+				icon: data.icon,
 			},
 		});
 	}
@@ -50,12 +78,23 @@ export class CategoryService {
 	async listCategoriesByUser(userId: string) {
 		return prismaClient.category.findMany({
 			where: { userId: userId },
+			orderBy: { name: 'asc' },
 		});
 	}
 
-	async findCategory(id: string) {
+	async findCategory(id: string, userId: string) {
 		return prismaClient.category.findUnique({
-			where: { id: id },
+			where: { id: id, userId: userId },
 		});
+	}
+
+	async countTransactionsInCategory(
+		id: string,
+		userId: string,
+	): Promise<number> {
+		const count = await prismaClient.transaction.count({
+			where: { categoryId: id, userId: userId },
+		});
+		return count;
 	}
 }

@@ -1,0 +1,219 @@
+import {
+	Dialog,
+	DialogHeader,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useEffect, useRef, useState } from 'react';
+import { IconButton } from './IconButton';
+import { Button } from '@/components/ui/button';
+import { useMutation } from '@apollo/client/react';
+import { UPDATE_CATEGORY_MUTATION } from '@/lib/graphql/mutations/Category';
+import { toast } from 'sonner';
+import { ColorButton } from './ColorButton';
+import type { Category } from '@/types';
+import { ICON_OPTIONS } from '@/types';
+
+interface EditCategoryDialogProps {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	category: Category;
+	onSuccess?: () => void;
+}
+
+type ColorOption = {
+	value: string;
+	borderClass: string;
+	bgClass: string;
+};
+
+const COLOR_OPTIONS: ColorOption[] = [
+	{ value: 'green', borderClass: 'border-green-500', bgClass: 'bg-green-base' },
+	{ value: 'blue', borderClass: 'border-blue-500', bgClass: 'bg-blue-base' },
+	{
+		value: 'purple',
+		borderClass: 'border-purple-500',
+		bgClass: 'bg-purple-base',
+	},
+	{ value: 'pink', borderClass: 'border-pink-500', bgClass: 'bg-pink-base' },
+	{ value: 'red', borderClass: 'border-red-500', bgClass: 'bg-red-base' },
+	{
+		value: 'orange',
+		borderClass: 'border-orange-500',
+		bgClass: 'bg-orange-base',
+	},
+	{
+		value: 'yellow',
+		borderClass: 'border-yellow-500',
+		bgClass: 'bg-yellow-base',
+	},
+];
+
+export function EditCategoryDialog({
+	open,
+	onOpenChange,
+	category,
+	onSuccess,
+}: EditCategoryDialogProps) {
+	const formRef = useRef<HTMLFormElement>(null);
+	const [name, setName] = useState('');
+	const [description, setDescription] = useState('');
+	const [icon, setIcon] = useState('');
+	const [color, setColor] = useState('');
+
+	const [updateCategory, { loading }] = useMutation(UPDATE_CATEGORY_MUTATION, {
+		onCompleted: () => {
+			toast.success('Categoria atualizada com sucesso!');
+			onOpenChange(false);
+		},
+		onError: (error) => {
+			toast.error('Erro ao atualizar categoria: ' + error.message);
+		},
+	});
+
+	useEffect(() => {
+		if (!open) return;
+		setName(category.name ?? '');
+		setDescription(category.description ?? '');
+		setIcon(category.icon ?? '');
+		setColor(category.color ?? '');
+	}, [open, category]);
+
+	const canSubmit =
+		name.trim() !== '' && icon !== '' && color !== '' && !loading;
+
+	const handleIconSelect = (selectedIcon: string) => {
+		setIcon(selectedIcon);
+	};
+
+	const handleColorSelect = (selectedColor: string) => {
+		setColor(selectedColor);
+	};
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			updateCategory({
+				variables: {
+					data: {
+						id: category.id,
+						name,
+						description,
+						icon,
+						color,
+					},
+				},
+			});
+			if (onSuccess) {
+				onSuccess();
+			}
+			onOpenChange(false);
+		} catch (error) {}
+	};
+
+	const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key !== 'Enter') return;
+		e.preventDefault();
+		if (!canSubmit) return;
+		formRef.current?.requestSubmit();
+	};
+
+	return (
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="border border-gray-200 bg-white">
+				<DialogHeader className="mb-6">
+					<div className="flex flex-col gap-0.5">
+						<DialogTitle className="text-gray-800">
+							Editar categoria
+						</DialogTitle>
+						<DialogDescription className="text-gray-600 text-sm">
+							Atualize os dados da sua categoria
+						</DialogDescription>
+					</div>
+				</DialogHeader>
+				<form
+					ref={formRef}
+					onSubmit={handleSubmit}
+					className="flex flex-col gap-6"
+				>
+					<div className="grid gap-2">
+						<Label htmlFor="name" className="text-gray-600">
+							Título
+						</Label>
+						<Input
+							id="name"
+							type="text"
+							placeholder="Ex. Alimentação"
+							className="border-gray-200  px-4 py-5"
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							onKeyDown={handleInputKeyDown}
+							required
+							disabled={loading}
+						/>
+					</div>
+					<div className="grid gap-2">
+						<Label htmlFor="description" className="text-gray-600">
+							Descrição
+						</Label>
+						<Input
+							id="description"
+							type="text"
+							placeholder="Descrição da categoria"
+							className="border-gray-200  px-4 py-5"
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							onKeyDown={handleInputKeyDown}
+							disabled={loading}
+						/>
+						<span className="text-xs text-gray-500">Opcional</span>
+					</div>
+					<div className="grid gap-2">
+						<Label className="text-gray-600">Ícone</Label>
+						<div
+							className={`flex flex-wrap gap-3 justify-between ${loading ? 'pointer-events-none opacity-50' : ''}`}
+						>
+							{ICON_OPTIONS.map(({ value, Icon }) => (
+								<IconButton
+									key={value}
+									icon={<Icon className="w-7 h-7" />}
+									onSelectIcon={() => handleIconSelect(value)}
+									active={icon === value}
+								/>
+							))}
+						</div>
+					</div>
+					<div className="grid gap-2">
+						<Label className="text-gray-600">Cor</Label>
+						<div
+							className={`grid grid-cols-7 gap-3 ${loading ? 'pointer-events-none opacity-50' : ''}`}
+						>
+							{COLOR_OPTIONS.map(({ value, borderClass, bgClass }) => (
+								<ColorButton
+									key={value}
+									value={value}
+									borderClass={borderClass}
+									bgClass={bgClass}
+									color={color}
+									handleColorSelect={handleColorSelect}
+								/>
+							))}
+						</div>
+					</div>
+					<div className="grid gap-2 mt-4">
+						<Button
+							type="submit"
+							className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
+							disabled={!canSubmit}
+						>
+							Salvar
+						</Button>
+					</div>
+				</form>
+			</DialogContent>
+		</Dialog>
+	);
+}

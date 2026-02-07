@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import logo from '../assets/logo.svg';
+import logo from '../../assets/logo.svg';
 import {
 	Card,
 	CardContent,
@@ -9,34 +9,33 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { FieldGroup, Field, FieldLabel } from '@/components/ui/field';
 import { useAuthStore } from '@/stores/auth';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupInput,
-} from '@/components/ui/input-group';
 import {
 	EyeClosedIcon,
 	EyeIcon,
 	LockIcon,
-	LogInIcon,
 	MailIcon,
-	UserIcon,
+	UserPlus,
 } from 'lucide-react';
+import {
+	InputGroup,
+	InputGroupInput,
+	InputGroupAddon,
+} from '@/components/ui/input-group';
 import { validateEmail } from '@/lib/utils';
 
-export function RegisterPage() {
-	const [name, setName] = useState('');
+export function LoginPage() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [passwordVisible, setPasswordVisible] = useState(false);
 
-	const signup = useAuthStore((state) => state.signup);
+	const login = useAuthStore((state) => state.login);
 
 	const handlePasswordVisibility = () => {
 		setPasswordVisible(!passwordVisible);
@@ -45,7 +44,7 @@ export function RegisterPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (name.trim() === '' || email.trim() === '' || password.trim() === '') {
+		if (email.trim() === '' || password.trim() === '') {
 			toast.error('Por favor, preencha todos os campos.');
 			return;
 		}
@@ -55,62 +54,37 @@ export function RegisterPage() {
 			return;
 		}
 
-		if (password.length < 8) {
-			toast.error('A senha deve ter no mínimo 8 caracteres.');
-			return;
-		}
-
 		setLoading(true);
 
 		try {
-			const signupMutate = await signup({ name, email, password });
-			if (signupMutate) {
-				toast.success('Cadastro realizado com sucesso!');
+			const loginMutate = await login({ email, password });
+			if (loginMutate) {
+				toast.success('Login realizado com sucesso!');
 			}
 		} catch (error) {
-			console.error('Erro ao cadastrar:', error);
+			console.error('Erro ao fazer login:', error);
 			throw error;
 		} finally {
 			setLoading(false);
 		}
 	};
-
 	return (
 		<div className="flex flex-col gap-8 items-center justify-center min-h-[calc(100vh-4rem)]">
 			<img src={logo} alt="Financy Logo" />
 
 			<Card className="w-full max-w-md border-gray-200 bg-white shadow-sm">
 				<CardHeader>
-					<CardTitle className="text-xl text-center">Criar conta</CardTitle>
+					<CardTitle className="text-xl text-center">Fazer login</CardTitle>
 					<CardDescription className="text-center text-gray-600">
-						Comece a controlar suas finanças ainda hoje
+						Entre na sua conta para continuar
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit}>
 						<div className="flex flex-col gap-6">
 							<div className="grid gap-2">
-								<Label htmlFor="fullName" className="text-gray-600">
-									Nome completo
-								</Label>
-								<InputGroup className="border-gray-300 py-5">
-									<InputGroupInput
-										id="fullName"
-										type="text"
-										placeholder="Seu nome completo"
-										className="border-gray-200  px-4 py-5"
-										required
-										value={name}
-										onChange={(e) => setName(e.target.value)}
-									/>
-									<InputGroupAddon align="inline-start">
-										<UserIcon className="text-muted-foreground text-gray-500" />
-									</InputGroupAddon>
-								</InputGroup>
-							</div>
-							<div className="grid gap-2">
 								<Label htmlFor="email" className="text-gray-600">
-									E-mail
+									Email
 								</Label>
 								<InputGroup className="border-gray-300 py-5">
 									<InputGroupInput
@@ -158,9 +132,27 @@ export function RegisterPage() {
 										</Button>
 									</InputGroupAddon>
 								</InputGroup>
-								<span className="text-gray-500 text-xs">
-									A senha deve ter no mínimo 8 caracteres
-								</span>
+							</div>
+							<div className="grid gap-2">
+								<div className="flex items-center justify-between">
+									<FieldGroup className="mx-auto">
+										<Field orientation="horizontal">
+											<Checkbox
+												id="terms-checkbox-basic"
+												name="terms-checkbox-basic"
+											/>
+											<FieldLabel htmlFor="terms-checkbox-basic">
+												Lembrar-me
+											</FieldLabel>
+										</Field>
+									</FieldGroup>
+									<a
+										href="#"
+										className="ml-auto inline-block text-sm underline-offset-4 hover:underline whitespace-nowrap text-brand-base"
+									>
+										Recuperar senha
+									</a>
+								</div>
 							</div>
 						</div>
 					</form>
@@ -172,22 +164,22 @@ export function RegisterPage() {
 						disabled={loading}
 						onClick={handleSubmit}
 					>
-						Cadastrar
+						Entrar
 					</Button>
 					<div className="flex gap-2 w-full items-center justify-center-safe">
 						<div className="h-px bg-gray-300 w-full"></div>
 						<div className="text-gray-500 px-2">ou</div>
 						<div className="h-px bg-gray-300 w-full"></div>
 					</div>
-					<div className="text-center text-gray-600">Já tem uma conta?</div>
+					<div className="text-center text-gray-600">Ainda não tem conta?</div>
 					<Button
 						variant="outline"
 						className="w-full border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-5"
 						asChild
 					>
-						<Link to="/login">
-							<LogInIcon className="inline-block" />
-							Fazer login
+						<Link to="/register">
+							<UserPlus className="inline-block" />
+							Criar conta
 						</Link>
 					</Button>
 				</CardFooter>
