@@ -55,8 +55,7 @@ export function TransactionsPage() {
 				(type === 'negative' && transaction.amount < 0) ||
 				(type === 'positive' && transaction.amount > 0);
 			const matchesPeriod =
-				period === 'all' ||
-				getMonthKey(new Date(transaction.date)) === period;
+				period === 'all' || getMonthKey(new Date(transaction.date)) === period;
 			if (!normalizedSearch) {
 				return matchesCategory && matchesType && matchesPeriod;
 			}
@@ -133,6 +132,7 @@ export function TransactionsPage() {
 					onDelete={handleOpenDeleteDialog}
 				/>
 			</section>
+
 			<CreateTransactionDialog
 				open={createDialogOpen}
 				onOpenChange={setCreateDialogOpen}
