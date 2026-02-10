@@ -21,7 +21,10 @@ export function CategoriesPage() {
 
 	const { data, refetch } = useQuery<{
 		listCategoriesByUser: Category[];
-	}>(LIST_CATEGORIES_QUERY);
+	}>(LIST_CATEGORIES_QUERY, {
+		fetchPolicy: 'cache-and-network',
+		nextFetchPolicy: 'cache-first',
+	});
 
 	const categories = data?.listCategoriesByUser || [];
 
