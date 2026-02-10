@@ -1,4 +1,6 @@
-# Financy - Desafio Fase 3
+# Rocketseat - Financy
+
+## Projeto da Pós-graduação Tech Developer 360 da Faculdade de Tecnologia Rocketseat
 
 Projeto FullStack de gerenciamento de finanças. O objetivo é permitir a organização financeira com gestão de transações e categorias.  
 Briefing e layout: https://efficient-sloth-d85.notion.site/Desafio-Fase-3-Financy-2ca395da5770806ba9c5fba5cc3f681a  
