@@ -126,7 +126,7 @@ export function RegisterPage() {
 									</InputGroupAddon>
 								</InputGroup>
 							</div>
-							<div className="grid gap-2">
+							<div className="grid gap-2  mb-2">
 								<Label htmlFor="password" className="text-gray-600">
 									Senha
 								</Label>
@@ -171,12 +171,14 @@ export function RegisterPage() {
 						>
 							Cadastrar
 						</Button>
-						<div className="flex gap-2 w-full items-center justify-center-safe">
+						<div className="flex gap-2 w-full items-center justify-center-safe my-4">
 							<div className="h-px bg-gray-300 w-full"></div>
 							<div className="text-gray-500 px-2">ou</div>
 							<div className="h-px bg-gray-300 w-full"></div>
 						</div>
-						<div className="text-center text-gray-600">Já tem uma conta?</div>
+						<div className="text-center text-gray-600 mb-2">
+							Já tem uma conta?
+						</div>
 						<Button
 							variant="outline"
 							className="w-full border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-5"

@@ -5,12 +5,15 @@ import App from './App.tsx';
 import { BrowserRouter } from 'react-router';
 import { ApolloProvider } from '@apollo/client/react';
 import { apolloClient } from './lib/apollo.ts';
+import { TooltipProvider } from './components/ui/tooltip.tsx';
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<ApolloProvider client={apolloClient}>
 			<BrowserRouter>
-				<App />
+				<TooltipProvider>
+					<App />
+				</TooltipProvider>
 			</BrowserRouter>
 		</ApolloProvider>
 	</StrictMode>,

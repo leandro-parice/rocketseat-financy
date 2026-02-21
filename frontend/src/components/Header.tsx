@@ -7,10 +7,10 @@ export function Header() {
 	const { user } = useAuthStore();
 	const initials = getInitials(user?.name || '');
 	return (
-		<header className="bg-white w-full flex justify-between items-center px-12 py-4 shadow-sm border-b border-gray-200 mb-6">
+		<header className="bg-white w-full flex justify-between items-center px-12 py-4 shadow-sm border-b border-gray-200 mb-12">
 			<img src={logo} alt="Financy Logo" />
 			<nav>
-				<ul className="flex justify-center gap-4 text-sm text-gray-600">
+				<ul className="flex justify-center gap-5 text-sm text-gray-600">
 					<li>
 						<NavLink
 							to="/"

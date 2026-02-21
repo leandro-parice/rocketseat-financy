@@ -67,7 +67,7 @@ export function CategoriesPage() {
 		<>
 			<section className="flex flex-col gap-6 items-center justify-center w-full">
 				<div className="flex flex-col gap-6 items-start justify-center w-full max-w-6xl">
-					<div className="pt-6 flex justify-between items-center w-full mb-6">
+					<div className="pt-6 flex justify-between items-center w-full">
 						<div className="flex flex-col gap-1">
 							<h1 className="text-3xl font-bold text-gray-800">Categorias</h1>
 							<span className="text-gray-600">

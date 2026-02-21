@@ -137,7 +137,7 @@ export function LoginPage() {
 									</InputGroupAddon>
 								</InputGroup>
 							</div>
-							<div className="grid gap-2">
+							<div className="grid gap-2 mb-2">
 								<div className="flex items-center justify-between">
 									<FieldGroup className="mx-auto">
 										<Field orientation="horizontal">
@@ -168,12 +168,12 @@ export function LoginPage() {
 						>
 							Entrar
 						</Button>
-						<div className="flex gap-2 w-full items-center justify-center-safe">
+						<div className="flex gap-2 w-full items-center justify-center-safe my-4">
 							<div className="h-px bg-gray-300 w-full"></div>
 							<div className="text-gray-500 px-2">ou</div>
 							<div className="h-px bg-gray-300 w-full"></div>
 						</div>
-						<div className="text-center text-gray-600">
+						<div className="text-center text-gray-600 mb-2">
 							Ainda não tem conta?
 						</div>
 						<Button

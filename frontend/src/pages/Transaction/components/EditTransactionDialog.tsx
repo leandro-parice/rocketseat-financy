@@ -157,8 +157,7 @@ export function EditTransactionDialog({
 				variables: {
 					data: {
 						id: transaction.id,
-						amount:
-							(amountType === 'negative' ? -1 : 1) * (amountCents / 100),
+						amount: (amountType === 'negative' ? -1 : 1) * (amountCents / 100),
 						description,
 						date: date?.toISOString(),
 						categoryId,
@@ -231,7 +230,7 @@ export function EditTransactionDialog({
 							id="description"
 							type="text"
 							placeholder="Ex. Almoço no restaurante"
-							className="border-gray-200 px-4 py-5"
+							className="border-gray-200 px-4 py-6"
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 							required
@@ -249,7 +248,7 @@ export function EditTransactionDialog({
 									type="text"
 									readOnly
 									placeholder="Selecione"
-									className="border-gray-200 px-4 py-5 cursor-pointer"
+									className="border-gray-200 px-4 py-6 cursor-pointer"
 									value={date ? format(date, 'dd/MM/yyyy') : ''}
 									onClick={() => setIsCalendarOpen((open) => !open)}
 									required
@@ -274,14 +273,14 @@ export function EditTransactionDialog({
 							<Label htmlFor="amount" className="text-gray-600">
 								Valor
 							</Label>
-							<InputGroup className="border-gray-200">
+							<InputGroup className="border-gray-200 py-6">
 								<InputGroupAddon className="text-gray-500">R$</InputGroupAddon>
 								<InputGroupInput
 									id="amount"
 									type="text"
 									inputMode="decimal"
 									placeholder="0,00"
-									className="px-4 py-5"
+									className="px-4 py-6"
 									value={amountInput}
 									onChange={(e) => handleAmountChange(e.target.value)}
 									onBlur={handleAmountBlur}
@@ -303,7 +302,7 @@ export function EditTransactionDialog({
 						>
 							<SelectTrigger
 								id="category"
-								className="w-full border border-gray-200 px-4 py-5 text-left"
+								className="w-full border border-gray-200 px-4 py-6 text-left"
 							>
 								<SelectValue placeholder="Selecione a categoria" />
 							</SelectTrigger>
@@ -325,7 +324,7 @@ export function EditTransactionDialog({
 					<div className="grid gap-2 mt-4">
 						<Button
 							type="submit"
-							className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
+							className="w-full bg-brand-base text-white hover:bg-brand-dark p-6"
 							disabled={!canSubmit}
 						>
 							Salvar

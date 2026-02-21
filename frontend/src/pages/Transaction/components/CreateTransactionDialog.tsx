@@ -189,7 +189,7 @@ export function CreateTransactionDialog({
 							id="description"
 							type="text"
 							placeholder="Ex. Almoço no restaurante"
-							className="border-gray-200 px-4 py-5"
+							className="border-gray-200 px-4 py-6"
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 							required
@@ -206,7 +206,7 @@ export function CreateTransactionDialog({
 									type="text"
 									readOnly
 									placeholder="Selecione"
-									className="border-gray-200 px-4 py-5 cursor-pointer"
+									className="border-gray-200 px-4 py-6 cursor-pointer"
 									value={date ? format(date, 'dd/MM/yyyy') : ''}
 									onClick={() => setIsCalendarOpen((open) => !open)}
 									required
@@ -230,14 +230,14 @@ export function CreateTransactionDialog({
 							<Label htmlFor="amount" className="text-gray-600">
 								Valor
 							</Label>
-							<InputGroup className="border-gray-200">
+							<InputGroup className="border-gray-200 py-6">
 								<InputGroupAddon className="text-gray-500">R$</InputGroupAddon>
 								<InputGroupInput
 									id="amount"
 									type="text"
 									inputMode="decimal"
 									placeholder="0,00"
-									className="px-4 py-5"
+									className="px-4 py-6"
 									value={formatCurrency(amountCents)}
 									onChange={(e) => handleAmountChange(e.target.value)}
 									required
@@ -252,7 +252,7 @@ export function CreateTransactionDialog({
 						<Select value={categoryId} onValueChange={setCategoryId}>
 							<SelectTrigger
 								id="category"
-								className="w-full border border-gray-200 px-4 py-5 text-left"
+								className="w-full border border-gray-200 px-4 py-6 text-left"
 							>
 								<SelectValue placeholder="Selecione a categoria" />
 							</SelectTrigger>
@@ -274,7 +274,7 @@ export function CreateTransactionDialog({
 					<div className="grid gap-2 mt-4">
 						<Button
 							type="submit"
-							className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
+							className="w-full bg-brand-base text-white hover:bg-brand-dark px-5 py-6"
 							disabled={!canSubmit}
 						>
 							Salvar

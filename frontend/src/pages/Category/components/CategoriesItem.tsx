@@ -6,9 +6,16 @@ import {
 	CardContent,
 	CardDescription,
 } from '@/components/ui/card';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { Category } from '@/types';
 import { ICON_OPTIONS } from '@/types';
 import { EditIcon, TrashIcon, UtensilsIcon } from 'lucide-react';
+import { useState } from 'react';
 
 interface CategoriesItemProps {
 	category: Category;
@@ -31,6 +38,7 @@ export function CategoriesItem({
 	onEdit,
 	onDelete,
 }: CategoriesItemProps) {
+	const [tooltipOpen, setTooltipOpen] = useState(false);
 	const SelectedIcon =
 		ICON_OPTIONS.find((option) => option.value === category.icon)?.Icon ??
 		UtensilsIcon;
@@ -40,9 +48,11 @@ export function CategoriesItem({
 		background: 'bg-gray-100',
 	};
 
+	const canRemove = category.transactionsCount === 0;
+
 	return (
 		<Card className="w-full border border-gray-200 bg-white shadow-sm gap-1">
-			<CardHeader className="mb-3">
+			<CardHeader className="mb-6">
 				<div className="flex justify-between mb-6">
 					<div
 						className={`w-8 h-8 flex justify-center items-center rounded-md shadow-sm gap-1 ${colorClasses.text} ${colorClasses.background}`}
@@ -50,12 +60,45 @@ export function CategoriesItem({
 						<SelectedIcon className="w-4 h-4" />
 					</div>
 					<div className="flex justify-center gap-3">
-						<Button
-							className="w-8 h-8 border border-gray-200 bg-white shadow-sm gap-1 text-red-base hover:bg-red-light hover:text-red-dark"
-							onClick={() => onDelete?.(category)}
-						>
-							<TrashIcon />
-						</Button>
+						{canRemove ? (
+							<Button
+								className="w-8 h-8 border border-gray-200 bg-white shadow-sm gap-1 text-red-base hover:bg-red-light hover:text-red-dark"
+								onClick={() => onDelete?.(category)}
+							>
+								<TrashIcon />
+							</Button>
+						) : (
+							<Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+								<TooltipTrigger asChild>
+									<span
+										className="inline-flex"
+										tabIndex={0}
+										onClick={() => setTooltipOpen(true)}
+										onKeyDown={(event) => {
+											if (event.key === 'Enter' || event.key === ' ') {
+												event.preventDefault();
+												setTooltipOpen(true);
+											}
+										}}
+									>
+										<Button
+											className="w-8 h-8 border border-gray-200 bg-white shadow-sm gap-1 text-red-base hover:bg-red-light hover:text-red-dark"
+											disabled
+										>
+											<TrashIcon />
+										</Button>
+									</span>
+								</TooltipTrigger>
+								<TooltipContent
+									side="top"
+									sideOffset={6}
+									className="text-center"
+								>
+									Essa categoria não pode ser removida <br /> porque possui
+									transações vinculadas.
+								</TooltipContent>
+							</Tooltip>
+						)}
 						<Button
 							className="w-8 h-8 border border-gray-200 bg-white shadow-sm gap-1 hover:bg-gray-100 hover:text-gray-700"
 							onClick={() => onEdit?.(category)}
@@ -71,9 +114,16 @@ export function CategoriesItem({
 					{category.description || 'Categoria sem descrição'}
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="text-xs text-right text-gray-500 font-normal">
-				{category.transactionsCount}{' '}
-				{category.transactionsCount === 1 ? 'item' : 'itens'}
+			<CardContent className="text-xs flex items-center justify-between text-gray-500 font-normal">
+				<div
+					className={`${colorClasses.text} ${colorClasses.background} rounded-3xl px-5 py-2 inline`}
+				>
+					{category.name}
+				</div>
+				<div>
+					{category.transactionsCount}{' '}
+					{category.transactionsCount === 1 ? 'item' : 'itens'}
+				</div>
 			</CardContent>
 		</Card>
 	);

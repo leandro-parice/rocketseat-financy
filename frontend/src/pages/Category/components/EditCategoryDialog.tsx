@@ -147,7 +147,7 @@ export function EditCategoryDialog({
 							id="name"
 							type="text"
 							placeholder="Ex. Alimentação"
-							className="border-gray-200  px-4 py-5"
+							className="border-gray-200 px-4 py-6"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							onKeyDown={handleInputKeyDown}
@@ -163,7 +163,7 @@ export function EditCategoryDialog({
 							id="description"
 							type="text"
 							placeholder="Descrição da categoria"
-							className="border-gray-200  px-4 py-5"
+							className="border-gray-200 px-4 py-6"
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 							onKeyDown={handleInputKeyDown}
@@ -206,7 +206,7 @@ export function EditCategoryDialog({
 					<div className="grid gap-2 mt-4">
 						<Button
 							type="submit"
-							className="w-full bg-brand-base text-white hover:bg-brand-dark p-5"
+							className="w-full bg-brand-base text-white hover:bg-brand-dark p-6"
 							disabled={!canSubmit}
 						>
 							Salvar
